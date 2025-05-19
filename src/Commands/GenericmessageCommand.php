@@ -15,17 +15,17 @@ class GenericmessageCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $name = 'genericmessage';
+    protected $name = "genericmessage";
 
     /**
      * @var string
      */
-    protected $description = 'Обработка обычных текстовых сообщений';
+    protected $description = "Обработка обычных текстовых сообщений";
 
     /**
      * @var string
      */
-    protected $version = '1.0.0';
+    protected $version = "1.0.0";
 
     /**
      * Поддерживающие фразы
@@ -38,7 +38,7 @@ class GenericmessageCommand extends SystemCommand
         "Ты заслуживаешь заботы и любви. Не забывай об этом. 🌼",
         "Иногда нужно просто выдохнуть. Я рядом. 💕",
     ];
-    
+
     /**
      * Советы по самопомощи
      * @var array
@@ -50,7 +50,7 @@ class GenericmessageCommand extends SystemCommand
         "🔹 Позвони близкому человеку и поговори о своих переживаниях.",
         "🔹 Пройдись на свежем воздухе, даже если всего 5 минут.",
     ];
-    
+
     /**
      * Дыхательные упражнения
      * @var array
@@ -72,42 +72,52 @@ class GenericmessageCommand extends SystemCommand
         $message = $this->getMessage();
         $chat_id = $message->getChat()->getId();
         $text = $message->getText();
-        
+
         // Создаем клавиатуру с основными кнопками
-        $keyboard = new \Longman\TelegramBot\Entities\Keyboard(
-            ['💬 Поддержка'],
-            ['🧘‍♀️ Упражнения для успокоения'],
-            ['📚 Советы по самопомощи'],
-            ['🆘 Срочная помощь']
-        );
+        $keyboard = (new Keyboard())->get();
         $keyboard->setResizeKeyboard(true);
-        
-        // Обработка текста сообщения
-        if ($text === '💬 Поддержка') {
-            $response = $this->support_messages[array_rand($this->support_messages)];
-        } elseif ($text === '🧘‍♀️ Упражнения для успокоения') {
-            $response = $this->breathing_exercises[array_rand($this->breathing_exercises)];
-        } elseif ($text === '📚 Советы по самопомощи') {
-            // Выбираем 3 случайных совета
-            $keys = array_rand($this->self_help_tips, 3);
-            $selected_tips = [];
-            foreach ($keys as $key) {
-                $selected_tips[] = $this->self_help_tips[$key];
-            }
-            $response = implode("\n", $selected_tips);
-        } elseif ($text === '🆘 Срочная помощь') {
-            $response = "Если тебе очень тяжело, пожалуйста, обратись за помощью:\n"
-                . "📞 Телефон доверия: 8-800-2000-122 (круглосуточно)\n"
-                . "✉️ Чат психологической помощи: https://www.psychologies.ru/";
-        } else {
-            // Ответ на неизвестную команду
-            $response = "Я не совсем понимаю, но ты можешь нажать на кнопку меню. 💕";
+
+        // Текст с ответом пользователю
+        $response = "";
+
+        switch ($text) {
+            case SupportButton:
+                $response =
+                    $this->support_messages[
+                        array_rand($this->support_messages)
+                    ];
+                break;
+            case ExercisesButton:
+                $response =
+                    $this->breathing_exercises[
+                        array_rand($this->breathing_exercises)
+                    ];
+                break;
+            case AdvicesButton:
+                // Выбираем 3 случайных совета
+                $keys = array_rand($this->self_help_tips, 3);
+                $selected_tips = [];
+                foreach ($keys as $key) {
+                    $selected_tips[] = $this->self_help_tips[$key];
+                }
+                $response = implode("\n", $selected_tips);
+                break;
+            case EmergencyButton:
+                $response =
+                    "Если тебе очень тяжело, пожалуйста, обратись за помощью:\n" .
+                    "📞 Телефон доверия: 8-800-2000-122 (круглосуточно)\n" .
+                    "✉️ Чат психологической помощи: https://www.psychologies.ru/";
+                break;
+            default:
+                // Ответ на неизвестную команду
+                $response =
+                    "Я не совсем понимаю, но ты можешь нажать на кнопку меню. 💕";
         }
-        
+
         $data = [
-            'chat_id' => $chat_id,
-            'text'    => $response,
-            'reply_markup' => $keyboard,
+            "chat_id" => $chat_id,
+            "text" => $response,
+            "reply_markup" => $keyboard,
         ];
 
         return Request::sendMessage($data);
