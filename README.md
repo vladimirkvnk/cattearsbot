@@ -29,7 +29,7 @@ Telegram бот поддержки, созданный с использован
 Для запуска бота в режиме long polling выполните:
 
 ```
-php getUpdates.php
+php bot.php
 ```
 
 ## Доступные команды
@@ -48,7 +48,7 @@ php getUpdates.php
 ## Структура проекта
 
 - `config.php` - Конфигурация бота
-- `getUpdates.php` - Скрипт для запуска в режиме getUpdates
+- `bot.php` - Скрипт для запуска в режиме getUpdates
 - `src/Commands/` - Директория с командами бота
 
 ## Создание новых команд
