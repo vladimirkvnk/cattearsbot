@@ -1,6 +1,5 @@
 # Composer
 /vendor/
-composer.lock
 composer.phar
 
 # Конфигурационные файлы с чувствительными данными
