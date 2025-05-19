@@ -1,0 +1,28 @@
+# Composer
+/vendor/
+composer.lock
+composer.phar
+
+# Конфигурационные файлы с чувствительными данными
+.env
+
+# Загруженные файлы
+/downloads/*
+/uploads/*
+!downloads/.gitkeep
+!uploads/.gitkeep
+
+# Логи
+*.log
+
+# Кэш
+.phpunit.result.cache
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
